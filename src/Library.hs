@@ -110,7 +110,8 @@ satisfaccionPedido :: [Pizza] -> Number
 satisfaccionPedido = sum . map nivelDeSatisfaccion 
 
 -- Punto 6
-type Pizzeria = [Pizza] -> [Pizza]
+type Pedido = [Pizza]
+type Pizzeria = Pedido -> Pedido
 
 -- Punto 6.a
 pizzeriaLosHijosDePato :: Pizzeria
