@@ -103,7 +103,7 @@ quitarIngredientesRepetidos pizza =
 
 sacarRepetidos :: Eq a => [a] -> [a]    -- Todavía no vimos estos tipos, viene más adelante
 sacarRepetidos [] = []
-sacarRepetidos (x : xs) = x : filter (/= x) xs
+sacarRepetidos (x : xs) = x : sacarRepetidos (filter (/= x) xs)
 
 -- Punto 5
 satisfaccionPedido :: [Pizza] -> Number
