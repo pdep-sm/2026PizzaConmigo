@@ -39,8 +39,9 @@ grandeDeMuzza = Pizza {
 nivelDeSatisfaccion :: Pizza -> Number
 nivelDeSatisfaccion pizza
     | (elem "palmito" . ingredientes) pizza = 0
-    | calorias pizza < 500 = ((*80) . length . ingredientes) pizza
-    | otherwise = ((*80) . length . ingredientes) pizza / 2
+    | calorias pizza < 500 = calculoSatisfaccion
+    | otherwise = calculoSatisfaccion / 2
+    where calculoSatisfaccion = ((*80) . length . ingredientes) pizza
 
 -- Punto 3
 valor :: Pizza -> Number
@@ -125,3 +126,45 @@ pizzeriaElResumen pizzas = zipWith mezcladita pizzas $ tail pizzas
 pizzeriaElResumen' :: Pizzeria
 pizzeriaElResumen' [pizza] = [pizza] -- También faltaban los corchetes
 pizzeriaElResumen' (p:ps) = zipWith mezcladita (p:ps) ps
+
+
+-- Punto 6.c
+pizzeriaEspecial pizza = map (mezcladita pizza)
+anchoaBasica = Pizza {
+    ingredientes = ["salsa", "anchoas"],
+    tamanio = 8,
+    calorias = 270
+}
+pizzeriaPescadito = pizzeriaEspecial anchoaBasica
+
+-- Punto 6.d
+pizzeriaGourmet :: Number -> Pizzeria
+pizzeriaGourmet nivelExquisitez pedido =
+    map agrandar . 
+    filter ((>nivelExquisitez). nivelDeSatisfaccion) $ pedido
+
+pizzeriaLaJauja = pizzeriaGourmet 399
+
+-- 7.a
+sonDignasDeCalleCorrientes pedido pzs = 
+    filter ((satisfaccionPedido pedido <).satisfaccionPedido.($ pedido)) pzs 
+{- 
+funcionAuxiliar pedido pizzeria =
+    satisfaccionPedido pedido < satisfaccionPedido (pizzeria pedido)
+    satisfaccionPedido pedido < satisfaccionPedido (pizzeria $ pedido)
+    satisfaccionPedido pedido < satisfaccionPedido (($) pizzeria pedido)
+    satisfaccionPedido pedido < satisfaccionPedido (flip ($) pedido pizzeria)
+    satisfaccionPedido pedido < satisfaccionPedido (($ pedido) pizzeria)
+    (satisfaccionPedido pedido <). satisfaccionPedido . ($ pedido) -- pizzeria
+-} 
+
+-- ($) f v = f v == f $ v 
+
+-- 9 Bonus
+laPizzeriaPredilecta :: [Pizzeria] -> Pizzeria
+laPizzeriaPredilecta pizzerias = foldl1 (.) pizzerias
+
+-- laPizzeriaPredilecta [pizzeriaPescadito, pizzeriaLaJauja, pizzeriaElResumen]
+
+pizzeriaCompuesta :: Pizzeria
+pizzeriaCompuesta = (pizzeriaElResumen . pizzeriaLaJauja. pizzeriaPescadito) 
